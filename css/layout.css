@@ -243,16 +243,6 @@
 }
 
 /* ============================================
-   SMOOTH INERTIA SCROLL CONTAINER
+   SMOOTH INERTIA SCROLL CONTAINER (Native in WP)
    ============================================ */
 
-@media (min-width: 1024px) {
-  [data-scroll-container] {
-    position: fixed;
-    top: 0;
-    inset-inline: 0;
-    width: 100%;
-    overflow: hidden;
-    will-change: transform;
-  }
-}

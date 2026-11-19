@@ -285,7 +285,8 @@
       item.className = "spec-item animate-fade-in";
 
       // Formatting multi-line text (like in plumbing fixtures)
-      const formattedText = spec.text.replace(/\n/g, "<br>");
+      const rawText = spec.text || spec.desc || "";
+      const formattedText = String(rawText).replace(/\n/g, "<br>");
 
       item.innerHTML = `
         <div class="spec-item__label">

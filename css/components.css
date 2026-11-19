@@ -873,26 +873,6 @@
   color: var(--color-clay);
 }
 
-/* Footer Responsive */
-@media (max-width: 1023px) {
-  .footer__grid {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-5);
-  }
-}
-
-@media (max-width: 639px) {
-  .footer__grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-5);
-  }
-
-  .footer__bottom {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
 /* ============================================
    FORM COMPONENTS
    ============================================ */

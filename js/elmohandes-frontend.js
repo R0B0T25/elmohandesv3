@@ -188,8 +188,10 @@
 
       const currentScrollY = window.scrollY;
       const isHeroPage = document.querySelector(".hero");
+      const heroPassed =
+        isHeroPage && isHeroPage.getBoundingClientRect().bottom <= 90;
 
-      if (currentScrollY > 80) {
+      if (currentScrollY > 40 || heroPassed) {
         header.classList.remove("is-transparent");
         header.classList.add("is-scrolled");
       } else {
@@ -216,16 +218,7 @@
       ticking = false;
     }
 
-    window.addEventListener(
-      "scroll",
-      () => {
-        if (!ticking) {
-          requestAnimationFrame(updateHeader);
-          ticking = true;
-        }
-      },
-      { passive: true }
-    );
+    window.addEventListener("scroll", updateHeader, { passive: true });
 
     updateHeader();
 

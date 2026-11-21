@@ -592,7 +592,7 @@
 		<!-- Floating WhatsApp with Smart Concierge Pill -->
 		<div class="whatsapp-float-wrapper">
 			<div class="whatsapp-float__pill" id="whatsapp-concierge-pill">
-				<button type="button" class="whatsapp-float__close" aria-label="إغلاق الرسالة" onclick="this.parentElement.style.display='none'">×</button>
+				<button type="button" class="whatsapp-float__close" id="whatsapp-concierge-close" aria-label="إغلاق الرسالة">×</button>
 				<span class="whatsapp-float__dot"></span>
 				<a href="https://wa.me/201032144421?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%AD%D8%AC%D8%B2%20%D9%85%D8%B9%D8%A7%D9%8A%D9%86%D8%A9%20%D9%87%D9%86%D8%AF%D8%B3%D9%8A%D8%A9%20%D9%84%D9%88%D8%AD%D8%AF%D8%AA%D9%8A%20%D8%A7%D9%84%D8%A2%D9%86" target="_blank" rel="noopener noreferrer" class="whatsapp-float__text">
 					احجز معاينتك الآن
@@ -618,14 +618,14 @@
 				</svg>
 			</button>
 			<div class="lightbox__container">
-				<img src="" alt="" class="lightbox__img" />
+				<img alt="" class="lightbox__img" hidden />
 				<div class="lightbox__controls">
 					<button class="lightbox__btn lightbox__next" aria-label="الصورة التالية">
 						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<polyline points="9 18 15 12 9 6"></polyline>
 						</svg>
 					</button>
-					<span class="lightbox__counter">1 / 6</span>
+					<span class="lightbox__counter" dir="ltr">1 / 6</span>
 					<button class="lightbox__btn lightbox__prev" aria-label="الصورة السابقة">
 						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<polyline points="15 18 9 12 15 6"></polyline>

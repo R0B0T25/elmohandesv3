@@ -144,8 +144,7 @@
 
 .ba-slider__image {
   position: absolute;
-  top: 0;
-  right: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -155,18 +154,18 @@
 .ba-slider__before-wrapper {
   position: absolute;
   inset: 0;
-  left: auto;
-  right: 0;
-  width: 50%; /* JS changes this value dynamically */
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   z-index: 1;
+  clip-path: inset(0 0 0 var(--ba-split, 50%));
 }
 
 .ba-slider__before-wrapper .ba-slider__image--before {
-  width: 100vw;
-  max-width: none;
-  width: auto;
+  width: 100%;
   height: 100%;
+  max-width: 100%;
+  object-fit: cover;
 }
 
 /* Divider Handle */
@@ -254,39 +253,42 @@
 }
 
 .lightbox__container {
-  max-width: 90vw;
-  max-height: 80vh;
+  max-width: 92vw;
+  max-height: 90vh;
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
 }
 
 .lightbox__img {
   max-width: 100%;
-  max-height: 80vh;
+  max-height: 74vh;
   object-fit: contain;
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-medium);
 }
 
 .lightbox__controls {
-  position: absolute;
-  inset-inline: var(--space-5);
-  top: 50%;
-  transform: translateY(-50%);
+  position: static;
+  transform: none;
   display: flex;
-  justify-content: space-between;
-  width: calc(100% - 2 * var(--space-5));
-  pointer-events: none;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  width: auto;
+  pointer-events: auto;
 }
 
 .lightbox__btn {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-full);
-  background: rgba(245, 241, 234, 0.1);
-  border: 1px solid rgba(245, 241, 234, 0.2);
+  background: rgba(245, 241, 234, 0.14);
+  border: 1px solid rgba(245, 241, 234, 0.28);
   color: var(--color-ivory);
   font-size: var(--text-body-l);
   cursor: pointer;
@@ -305,11 +307,13 @@
 }
 
 .lightbox__counter {
-  position: absolute;
-  bottom: var(--space-4);
-  left: 50%;
-  transform: translateX(-50%);
-  color: rgba(245, 241, 234, 0.6);
+  position: static;
+  transform: none;
+  color: rgba(245, 241, 234, 0.85);
+  font-size: 14px;
+  font-weight: 600;
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 
 /* ============================================
@@ -339,14 +343,6 @@
 
   .ba-slider {
     aspect-ratio: 4/3;
-  }
-
-  .ba-slider__before-wrapper .ba-slider__image--before {
-    width: 200vw; /* offsets scaling on mobile */
-  }
-
-  .lightbox__controls {
-    inset-inline: var(--space-3);
   }
 }
 

@@ -175,13 +175,13 @@
   font-family: var(--font-heading);
   font-size: 15px;
   font-weight: 600;
-  color: var(--color-ink-muted);
+  color: var(--color-ink-soft);
   background: transparent;
-  border: none;
+  border: 1px solid var(--color-border);
   padding: 10px 20px;
   border-radius: 100px;
   cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-default);
+  transition: all var(--duration-small) var(--ease-default);
 }
 
 .spec-tab-btn:hover {
@@ -192,7 +192,23 @@
 .spec-tab-btn.is-active {
   color: var(--color-white);
   background: var(--color-clay);
+  border-color: var(--color-clay);
   box-shadow: 0 4px 12px rgba(184, 92, 56, 0.2);
+}
+
+@media (max-width: 900px) {
+  .specs-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .spec-tab-btn {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    text-align: center;
+    border-radius: var(--radius-md);
+  }
 }
 
 /* Spec Panel Content Card */
@@ -241,8 +257,8 @@
   padding: var(--space-4);
   border-radius: var(--radius-md);
   transition:
-    transform var(--duration-fast) var(--ease-default),
-    border-color var(--duration-fast) var(--ease-default);
+    transform var(--duration-small) var(--ease-default),
+    border-color var(--duration-small) var(--ease-default);
   gap: var(--space-4);
 }
 

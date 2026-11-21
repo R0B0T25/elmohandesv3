@@ -171,23 +171,25 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-1);
+  gap: 6px;
   position: absolute;
-  bottom: var(--space-5);
+  bottom: var(--space-3);
   left: 50%;
   transform: translateX(-50%);
   opacity: 0;
+  pointer-events: none;
+  z-index: 2;
   transition: opacity var(--duration-reveal) var(--ease-default);
 }
 
 .scroll-indicator.is-revealed {
-  opacity: 0.6;
+  opacity: 0.72;
 }
 
 .scroll-indicator__line {
   width: 1px;
-  height: 48px;
-  background: var(--color-ivory);
+  height: 36px;
+  background: rgba(245, 241, 234, 0.45);
   position: relative;
   overflow: hidden;
 }
@@ -222,13 +224,18 @@
 }
 
 .scroll-indicator__text {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-ivory);
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
+  letter-spacing: 0;
+  color: rgba(245, 241, 234, 0.85);
+  writing-mode: horizontal-tb;
+  transform: none;
+}
+
+@media (max-width: 767px), (max-height: 680px) {
+  .scroll-indicator {
+    display: none;
+  }
 }
 
 /* ============================================
@@ -412,8 +419,7 @@
 }
 
 .filter-item.is-hidden {
+  display: none;
   opacity: 0;
-  transform: scale(0.95);
   pointer-events: none;
-  position: absolute;
 }

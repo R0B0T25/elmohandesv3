@@ -233,8 +233,10 @@
       menuOpen = true;
       header?.classList.remove("is-hidden");
       header?.classList.add("is-scrolled");
+      document.body.classList.add("nav-open");
       navToggle?.classList.add("is-open");
       navDrawer?.classList.add("is-open");
+      navDrawer?.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
       document.documentElement.style.overflow = "hidden";
       navToggle?.setAttribute("aria-expanded", "true");
@@ -243,8 +245,10 @@
 
     function closeMenu() {
       menuOpen = false;
+      document.body.classList.remove("nav-open");
       navToggle?.classList.remove("is-open");
       navDrawer?.classList.remove("is-open");
+      navDrawer?.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
       navToggle?.setAttribute("aria-expanded", "false");
@@ -395,23 +399,16 @@
 
       items.forEach((item) => {
         const category = item.dataset.category;
-        if (item._showTimeout) clearTimeout(item._showTimeout);
-        if (item._hideTimeout) clearTimeout(item._hideTimeout);
-
         if (filterVal === "all" || category === filterVal) {
           item.classList.remove("is-hidden");
           item.setAttribute("aria-hidden", "false");
-          item._showTimeout = setTimeout(() => {
-            item.style.opacity = "1";
-            item.style.transform = "scale(1)";
-          }, 50);
+          item.style.opacity = "1";
+          item.style.transform = "scale(1)";
         } else {
+          item.classList.add("is-hidden");
+          item.setAttribute("aria-hidden", "true");
           item.style.opacity = "0";
           item.style.transform = "scale(0.95)";
-          item._hideTimeout = setTimeout(() => {
-            item.classList.add("is-hidden");
-            item.setAttribute("aria-hidden", "true");
-          }, 300);
         }
       });
     });
@@ -425,40 +422,45 @@
     if (!slider) return;
 
     const beforeWrapper = slider.querySelector(".ba-slider__before-wrapper");
-    const beforeImage = beforeWrapper?.querySelector(
-      ".ba-slider__image--before"
-    );
     const handle = slider.querySelector(".ba-slider__handle");
     const hint = slider.querySelector(".ba-slider__hint");
 
     if (!beforeWrapper || !handle) return;
 
     let active = false;
+    let currentPos = 50;
 
     function hideHint() {
       if (hint) hint.classList.add("is-hidden");
     }
 
-    function adjustBeforeImageWidth() {
-      if (beforeImage) {
-        beforeImage.style.width = slider.offsetWidth + "px";
-      }
+    function setPosition(position) {
+      currentPos = Math.max(0, Math.min(100, position));
+      beforeWrapper.style.setProperty("--ba-split", currentPos + "%");
+      handle.style.left = currentPos + "%";
+      handle.setAttribute("aria-valuenow", String(Math.round(currentPos)));
     }
-
-    adjustBeforeImageWidth();
-    window.addEventListener("resize", adjustBeforeImageWidth);
 
     function slide(x) {
       hideHint();
       const rect = slider.getBoundingClientRect();
-      let position = ((x - rect.left) / rect.width) * 100;
-      if (position < 0) position = 0;
-      if (position > 100) position = 100;
-
-      // RTL: beforeWrapper is anchored right, so width is (100 - position)%
-      beforeWrapper.style.width = 100 - position + "%";
-      handle.style.left = position + "%";
+      if (!rect.width) return;
+      setPosition(((x - rect.left) / rect.width) * 100);
     }
+
+    setPosition(50);
+
+    handle.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        hideHint();
+        setPosition(currentPos - 5);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        hideHint();
+        setPosition(currentPos + 5);
+      }
+    });
 
     slider.addEventListener("mousedown", (e) => {
       active = true;
@@ -511,9 +513,11 @@
     function updateLightboxImage() {
       const img = lightbox.querySelector(".lightbox__img");
       const counter = lightbox.querySelector(".lightbox__counter");
-      if (img) {
-        img.src = lightboxImages[currentIndex]?.src || "";
-        img.alt = lightboxImages[currentIndex]?.alt || "";
+      const current = lightboxImages[currentIndex];
+      if (img && current?.src) {
+        img.hidden = false;
+        img.src = current.src;
+        img.alt = current.alt || "";
       }
       if (counter) {
         counter.textContent =
@@ -539,6 +543,11 @@
         lightbox.close();
       } else {
         lightbox.removeAttribute("open");
+      }
+      const img = lightbox.querySelector(".lightbox__img");
+      if (img) {
+        img.removeAttribute("src");
+        img.hidden = true;
       }
       document.body.style.overflow = "";
     }
@@ -1047,20 +1056,45 @@
     const resetBtn = document.getElementById("reset-form-btn");
     if (!form) return;
 
+    function validateField(input) {
+      const val = input.value.trim();
+      let isValid = val.length > 0;
+      if (isValid && input.type === "tel") {
+        const digits = val.replace(/[^0-9]/g, "");
+        isValid = digits.length >= 8;
+      }
+      const group = input.closest(".form-group");
+      input.classList.toggle("is-error", !isValid);
+      input.setAttribute("aria-invalid", isValid ? "false" : "true");
+      if (group) group.classList.toggle("has-error", !isValid);
+      return isValid;
+    }
+
+    form.querySelectorAll("[required]").forEach((input) => {
+      const evt = input.tagName === "SELECT" ? "change" : "input";
+      input.addEventListener(evt, () => {
+        if (input.classList.contains("is-error")) {
+          validateField(input);
+        }
+      });
+    });
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       let valid = true;
+      let firstInvalid = null;
 
       form.querySelectorAll("[required]").forEach((input) => {
-        if (!input.value.trim()) {
-          input.classList.add("is-error");
+        if (!validateField(input)) {
           valid = false;
-        } else {
-          input.classList.remove("is-error");
+          if (!firstInvalid) firstInvalid = input;
         }
       });
 
-      if (!valid) return;
+      if (!valid) {
+        firstInvalid?.focus();
+        return;
+      }
 
       const submitBtn = form.querySelector('[type="submit"]');
       const originalText = submitBtn?.innerHTML || "إرسال الطلب";
@@ -1099,8 +1133,34 @@
 
     resetBtn?.addEventListener("click", () => {
       form.reset();
+      form.querySelectorAll(".is-error").forEach((el) => {
+        el.classList.remove("is-error");
+        el.removeAttribute("aria-invalid");
+      });
+      form.querySelectorAll(".has-error").forEach((el) => {
+        el.classList.remove("has-error");
+      });
       form.style.display = "";
       successEl?.classList.remove("is-visible");
+    });
+  }
+
+  function initWhatsappConcierge() {
+    const pill = document.getElementById("whatsapp-concierge-pill");
+    const closeBtn = document.getElementById("whatsapp-concierge-close");
+    if (!pill) return;
+
+    try {
+      if (sessionStorage.getItem("elm_wa_pill_closed") === "1") {
+        pill.style.display = "none";
+      }
+    } catch (e) {}
+
+    closeBtn?.addEventListener("click", () => {
+      pill.style.display = "none";
+      try {
+        sessionStorage.setItem("elm_wa_pill_closed", "1");
+      } catch (e) {}
     });
   }
 
@@ -1120,6 +1180,7 @@
     initPackageSpecsSwitcher();
     initOctoberHub();
     initContactForm();
+    initWhatsappConcierge();
   }
 
   if (document.readyState === "loading") {
